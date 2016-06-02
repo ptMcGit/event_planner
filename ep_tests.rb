@@ -27,9 +27,20 @@ class EventPlannerBase < Minitest::Test
   end
 
   class LoggedIn < EventPlannerBase
+
     def setup
       super
       header "Authorization", "zachh"
+    end
+
+    focus
+
+    def test_starts_with_empty_list
+      header "Authorization", "empty_user_test"
+      response = get "/events"
+
+      assert_equal 200, response.status
+      assert_equal "[]", response.body
     end
 
     def test_starts_with_empty_list
@@ -52,6 +63,8 @@ class EventPlannerBase < Minitest::Test
       assert_equal "Bob birthday", list.first["title"]
       assert_equal "2015-06-16", list.first["date"]
     end
+
+
 
 
 
