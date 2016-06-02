@@ -1,6 +1,7 @@
-require "sinatra/base"
-require "sinatra/json"
-require "pry"
+require 'sinatra/base'
+require 'sinatra/json'
+require 'json'
+require 'pry'
 
 DB = {}
 
@@ -19,6 +20,12 @@ class EventPlanner < Sinatra::Base
   get "/events" do
     DB[username] ||= []
     json DB[username]
+  end
+
+  post "/events" do
+    DB[username] ||= []
+    DB[username].push params
+    binding.pry
   end
 
   def require_authorization!
