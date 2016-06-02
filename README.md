@@ -14,6 +14,10 @@ Store events, and show weather forecast for the event date.
 
 #### Event Class
 
+#### User Class
+
+- location
+
 ### Weather (Wunderground)
 
 - weather_data.rb -- talk to Wunderground API
@@ -25,7 +29,7 @@ Store events, and show weather forecast for the event date.
 
 ### Forecast Class
 
-Carries temperature (celsius), percentage, date?
+Carries temperature (celsius), percentage, date, location?
 
 Wunderground data
 
@@ -41,6 +45,8 @@ Wunderground data
 - to_yyyy_mm_dd     ? and other date formats?
 
 ## Inter-app Communication?
+
+- Location passed around in zip code?
 
 - Time passed around in seconds
 
