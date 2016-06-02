@@ -27,16 +27,17 @@ Store events, and show weather forecast for the event date.
 
 #### Raw Forecast
 
-### Forecast Class
+### RawForecast Class
 
-Carries temperature (celsius), percentage, date, location?
+Carries temperature (F and C (high and low)),  rain percentage, date, location?
 
 Wunderground data
 
-- @celsius
-- @fahrenheit
+- @celsius an array with [high, low]
+- @fahrenheit an array with [high, low]
 - @rain_chance
 - date_in_sec
+- zip code
 
 #### Methods
 
@@ -67,6 +68,10 @@ Wunderground data
     - Percentage rain chance
     - Date/time
     - Temperature
+
+- RawForcast
+  -
+
 
 ##########
 
