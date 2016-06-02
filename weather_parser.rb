@@ -4,19 +4,20 @@ require './raw_forecast'
 
 class WeatherParser
 
-  attr_reader :path, :data, :celsius_temp, :fahrenheit_temp, :rain_chance
+  attr_reader :path, :date_in_s, :celsius_temp, :fahrenheit_temp, :rain_chance
 
-  def initialize path
+  def initialize path, date_in_s
     @path = path
+    @date_in_s       = date_in_s
     @celsius_temp    = []
     @fahrenheit_temp = []
     @rain_chance     = nil
-    @data = JSON.parse(File.read path)
+    # @data = JSON.parse(File.read path)
   end
 
   def parse!
-    data["forecast"]["simpleforecast"]["forecastday"].each do |day|
-      if day["date"]["epoch"] == "1341381600"
+    JSON.parse(File.read path)["forecast"]["simpleforecast"]["forecastday"].each do |day|
+      if day["date"]["epoch"] == date_in_s
         @fahrenheit_temp.push(day["high"]["fahrenheit"])
         @fahrenheit_temp.push(day["low"]["fahrenheit"])
         @celsius_temp.push(day["high"]["celsius"])
