@@ -31,13 +31,16 @@ Store events, and show weather forecast for the event date.
 
 Carries temperature (F and C (high and low)),  rain percentage, date, location?
 
-Wunderground data
+From Wunderground data
 
-- @celsius an array with [high, low]
-- @fahrenheit an array with [high, low]
+- @ctemp_day_hilo  an array with [high, low]
+- @ftemp_day_hilo an array with [high, low]
 - @rain_chance
-- date_in_sec
-- zip code
+- @date_in_sec
+- @zip_code
+- @ctemp_event_hour
+- @ftemp_event_hour
+
 
 #### Methods
 
@@ -68,10 +71,6 @@ Wunderground data
     - Percentage rain chance
     - Date/time
     - Temperature
-
-- RawForcast
-  -
-
 
 ##########
 
