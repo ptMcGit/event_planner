@@ -1,28 +1,28 @@
 require "json"
 require 'pry'
+require './raw_forecast'
 
 class WeatherParser
 
-  attr_reader :path, :users, :data, :items
+  attr_reader :path, :data, :celsius_temp, :fahrenheit_temp, :rain_chance
 
   def initialize path
     @path = path
-    @users = []
+    @celsius_temp    = []
+    @fahrenheit_temp = []
+    @rain_chance     = nil
     @data = JSON.parse(File.read path)
-    @items = []
   end
 
   def parse!
-    data["users"].each do |user|
-      @users.push(User.new user.values[0],
-                           user.values[1],
-                           user.values[2])
-    end
-    data["items"].each do |item|
-      @items.push(Item.new item.values[0],
-                           item.values[1],
-                           item.values[2],
-                           item.values[3])
+    data["forecast"]["simpleforecast"]["forecastday"].each do |day|
+      if day["date"]["epoch"] == "1341381600"
+        @fahrenheit_temp.push(day["high"]["fahrenheit"])
+        @fahrenheit_temp.push(day["low"]["fahrenheit"])
+        @celsius_temp.push(day["high"]["celsius"])
+        @celsius_temp.push(day["low"]["celsius"])
+        @rain_chance = day["pop"]
+      end
     end
   end
 end
