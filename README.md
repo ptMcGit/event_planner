@@ -16,7 +16,7 @@ Store events, and show weather forecast for the event date.
 
 ### Weather (Wunderground)
 
-- weather_api.rb -- talk to Wunderground API
+- weather_data.rb -- talk to Wunderground API
 - w_tests.rb
 
 ### Shared Classes
