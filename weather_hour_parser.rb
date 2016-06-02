@@ -4,10 +4,10 @@ require './raw_forecast'
 
 class WeatherHourParser
 
-  attr_reader :path, :date_in_s, :celsius_temp, :fahrenheit_temp, :rain_chance
+  attr_reader :input, :date_in_s, :celsius_temp, :fahrenheit_temp, :rain_chance
 
-  def initialize path, date_in_s
-    @path = path
+  def initialize input, date_in_s
+    @input = input
     @date_in_s       = date_in_s
     @celsius_temp    = nil
     @fahrenheit_temp = nil
@@ -15,7 +15,7 @@ class WeatherHourParser
   end
 
   def parse!
-    JSON.parse(File.read path)["hourly_forecast"].each do |hour|
+    JSON.parse(input)["hourly_forecast"].each do |hour|
       if hour["FCTTIME"]["epoch"] == date_in_s
         @fahrenheit_temp = hour["temp"]["english"]
         @celsius_temp = hour["temp"]["metric"]
