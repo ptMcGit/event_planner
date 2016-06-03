@@ -31,6 +31,12 @@ Holds data about event and forecasts per hour?
 - weather_data.rb -- talk to Wunderground API
 - w_tests.rb
 
+- to create WeatherData object...
+=> w = WeatherData.new(RawForecast object)
+
+- to get forecast  => w.get_forecast
+- returns updated RawForecast object
+
 ### Shared Classes
 
 #### Raw Forecast
@@ -43,7 +49,7 @@ From Wunderground data
 - @ftemp_day_hilo an array with [high, low]
 - @rain_chance
 - @date_of_event
-- @born_on_date
+- @forecast_filled_date
 - @zip_code
 - @ctemp_event_hour
 - @ftemp_event_hour

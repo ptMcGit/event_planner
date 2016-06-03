@@ -5,16 +5,15 @@ require './raw_forecast'
 
 
 class WeatherData
-
-  attr_reader :request, :time
+  attr_accessor :request
+  attr_reader :request, :time, :location
 
   def initialize request
     @request  = request
     @time     = request.date_of_event
+    @location = request.location_zip
   end
 
-  # def get_time
-  #   @time = request.date_of_event
-  # end
+
 
 end

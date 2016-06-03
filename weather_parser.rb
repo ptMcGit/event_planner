@@ -18,9 +18,9 @@ class WeatherParser
   end
 
   def parse!
-    raw = JSON.parse(File.read input)
-    if raw["forecast"]
-      raw["forecast"]["simpleforecast"]["forecastday"].each do |day|
+    # raw = JSON.parse(input)
+    if input["forecast"]
+      input["forecast"]["simpleforecast"]["forecastday"].each do |day|
         if day["date"]["epoch"] == date_of_event
           @ftemp_day_hilo.push(day["high"]["fahrenheit"])
           @ftemp_day_hilo.push(day["low"]["fahrenheit"])
@@ -29,8 +29,8 @@ class WeatherParser
           @rain_chance = day["pop"].to_s
         end
       end
-    elsif raw["hourly_forecast"]
-      raw["hourly_forecast"].each do |hour|
+    elsif input["hourly_forecast"]
+      input["hourly_forecast"].each do |hour|
         if hour["FCTTIME"]["epoch"] == date_of_event
           @ftemp_event_hour = hour["temp"]["english"]
           @ctemp_event_hour = hour["temp"]["metric"]
