@@ -21,6 +21,11 @@ Holds data about event and forecasts per hour?
 - @duration_sec - in 3600 second increments?
 - @zip_code
 
+##### Invalid combos
+
+@title          == @title
+@date           == @date
+@zip_code       == @zip_code
 
 #### User Class
 
