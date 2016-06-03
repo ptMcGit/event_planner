@@ -38,7 +38,7 @@ end
 class WeatherParserTest < Minitest::Test
 
   def test_can_parse_10day_daily
-    daily_info = WeatherParser.new(file_path("example_weather_data_by_day"),"1341381600")
+    daily_info = WeatherParser.new(File.read(file_path("example_weather_data_by_day")),"1341381600")
     assert_equal [], daily_info.ctemp_day_hilo
     assert_equal [], daily_info.ftemp_day_hilo
     assert_equal nil, daily_info.rain_chance
@@ -53,8 +53,9 @@ class WeatherParserTest < Minitest::Test
     assert_equal nil, daily_info.ctemp_event_hour
     assert_equal nil, daily_info.ftemp_event_hour
   end
+
   def test_can_parse_10day_hourly
-    hourly_info = WeatherParser.new(file_path("example_weather_data_by_hour"),"1464984000")
+    hourly_info = WeatherParser.new(File.read(file_path("example_weather_data_by_hour")),"1464984000")
     assert_equal [], hourly_info.ctemp_day_hilo
     assert_equal [], hourly_info.ftemp_day_hilo
     assert_equal nil, hourly_info.rain_chance
@@ -72,13 +73,13 @@ class WeatherParserTest < Minitest::Test
 
   def test_can_raise_error_if_incorrect_format
     assert_raises "Not valid data format" do
-      forecast_info = WeatherParser.new(file_path("example_data_conditions"),"1464984000")
+      forecast_info = WeatherParser.new(File.read(file_path("example_data_conditions")),"1464984000")
       forecast_info.parse!
     end
   end
 end
 
-class WeatherDataTest < Minitest::Test
+class WeatherDataTestBasic < Minitest::Test
 
   attr_reader :processing
 
@@ -95,7 +96,7 @@ class WeatherDataTest < Minitest::Test
   end
 
   def parsed_info
-    forecast_info = WeatherParser.new(file_path("example_weather_data_by_hour"),"1464984000")
+    forecast_info = WeatherParser.new(File.read(file_path("example_weather_data_by_hour")),"1464984000")
     forecast_info.parse!
     forecast_info
   end
@@ -112,7 +113,7 @@ class WeatherDataTest < Minitest::Test
     assert_equal "27701", processing.location
   end
 
-  def test_can_pass_weather_info_to_request_object
+  def test_can_pass_weather_info_to_request_object_manually
     assert_equal nil, processing.request.rain_chance
     assert_equal nil, processing.request.ctemp_event_hour
     assert_equal nil, processing.request.ftemp_event_hour
@@ -125,6 +126,34 @@ class WeatherDataTest < Minitest::Test
     assert_equal "31", processing.request.ctemp_event_hour
     assert_equal "88", processing.request.ftemp_event_hour
   end
+
+end
+
+class WeatherDataTestAdv < Minitest::Test
+
+  attr_reader :processing
+
+  def setup
+    @processing = build_processing
+  end
+
+  def request!
+    RawForecast.new date_of_event: "1464987600", location_zip: "27701", born_on_date: "1464984000"
+  end
+
+  def build_processing
+    WeatherData.new request!
+  end
+
+  # def test_can_make_data_query_to_wunderground_with_request_info_hourly
+  #   data_query = HTTParty.get "http://api.wunderground.com/api/#{ENV["WUNDERGROUND_KEY"]}/features/hourly10day/q/#{processing.location.to_i}.json"
+  #   hourly_info = WeatherParser.new(data_query,processing.time)
+  #   hourly_info.parse!
+  #
+  #   refute_equal nil, hourly_info.rain_chance
+  #   refute_equal nil, hourly_info.ctemp_event_hour
+  #   refute_equal nil, hourly_info.ftemp_event_hour
+  # end
 
 end
 
