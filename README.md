@@ -14,6 +14,14 @@ Store events, and show weather forecast for the event date.
 
 #### Event Class
 
+Holds data about event and forecasts per hour?
+
+- @title
+- @date         - in seconds
+- @duration_sec - in 3600 second increments?
+- @zip_code
+
+
 #### User Class
 
 - location
