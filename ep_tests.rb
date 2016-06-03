@@ -16,7 +16,6 @@ class EventPlannerBase < Minitest::Test
     EventPlanner
   end
 
-
   # user authorization headers
 
   def admin_user
@@ -53,32 +52,26 @@ class EventPlannerBase < Minitest::Test
     }
   end
 
-def test_admin_special_access
-  header *admin_user
-  response = get "/db"
-  assert_equal 200, response.status
-end
+  class AdminLogin < EventPlanner
+    def test_no_special_access_reg_user
+      header *reg_user
+      response = get "/db"
 
-focus
+      body = JSON.parse response.body
 
-def test_no_special_access_no_user
-  response = get "/db"
-  body = JSON.parse response.body
+      assert_equal 403, response.status
+      assert_equal 0, body.length
+    end
 
-  binding.pry
-  assert_equal 401, response.status
-  assert_equal "error", body["status"]
-end
+    def test_admin_login_gets_special_access
+      header *adminlogin
+      response = get "/db"
 
-def test_no_special_access_reg_user
-  header *reg_user
-  response = get "/db"
+      body = JSON.parse response.body
 
-  body = JSON.parse response.body
-
-  assert_equal 403, response.status
-  assert_equal 0, body.length
-end
+      assert_equal 200, response.status
+    end
+  end
 
   # class FirstTimeLogIn < EventPlannerBase
   #   def test_starts_with_empty_list
@@ -97,7 +90,18 @@ end
       body = JSON.parse response.body
       assert_equal "You must log in.", body["error"]
     end
+
+    def test_no_special_access_no_user
+      response = get "/db"
+      body = JSON.parse response.body
+
+      binding.pry
+      assert_equal 401, response.status
+      assert_equal "error", body["status"]
+    end
   end
+
+
 
   class LoggedIn < EventPlannerBase
 
