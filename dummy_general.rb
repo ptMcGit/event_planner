@@ -13,7 +13,3 @@ class DummyGeneral
   end
 
 end
-
-a = DummyGeneral.new
-a = a.get_forecast
-binding.pry
