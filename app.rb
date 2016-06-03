@@ -22,9 +22,30 @@ class EventPlanner < Sinatra::Base
     json DB[username]
   end
 
+  def event_is_valid? event
+    true
+  end
+
+
   post "/events" do
     DB[username] ||= []
-    DB[username].push params
+    if event_is_valid? params
+      DB[username].push params
+      json(
+        "status": "success",
+        "message": "#{params[:title]} successfully added."
+      )
+    else
+      json(
+        "status": "error",
+        "message": "There was a problem with your event: #{params[:title]}."
+      )
+    end
+
+  end
+
+  delete "/events" do
+    DB[username].delete_if { |k,v| k["title"] == params["title"]}
     binding.pry
   end
 

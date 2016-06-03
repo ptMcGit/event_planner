@@ -33,17 +33,8 @@ class EventPlannerBase < Minitest::Test
       header "Authorization", "zachh"
     end
 
-    focus
-
     def test_starts_with_empty_list
       header "Authorization", "empty_user_test"
-      response = get "/events"
-
-      assert_equal 200, response.status
-      assert_equal "[]", response.body
-    end
-
-    def test_starts_with_empty_list
       response = get "/events"
 
       assert_equal 200, response.status
@@ -64,7 +55,19 @@ class EventPlannerBase < Minitest::Test
       assert_equal "2015-06-16", list.first["date"]
     end
 
+focus
 
+    def test_can_delete_event
+      post "/events", title: "Sue birthday", date: "2015-06-16"
+      post "/events", title: "Bonnaroo", date: "2015-06-17"
+
+      delete "/events", title: "Sue birthday"
+
+      response = get "/events"
+
+      list = JSON.parse response.body
+      assert_equal 1, list.count
+    end
 
 
 
