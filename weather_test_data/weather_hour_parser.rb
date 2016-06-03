@@ -7,7 +7,7 @@ class WeatherHourParser
   attr_reader :input, :date_in_s, :celsius_temp, :fahrenheit_temp, :rain_chance
 
   def initialize input, date_in_s
-    @input = input
+    @input           = input
     @date_in_s       = date_in_s
     @celsius_temp    = nil
     @fahrenheit_temp = nil
@@ -15,7 +15,7 @@ class WeatherHourParser
   end
 
   def parse!
-    JSON.parse(input)["hourly_forecast"].each do |hour|
+    JSON.parse(File.read input)["hourly_forecast"].each do |hour|
       if hour["FCTTIME"]["epoch"] == date_in_s
         @fahrenheit_temp = hour["temp"]["english"]
         @celsius_temp = hour["temp"]["metric"]
