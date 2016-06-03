@@ -2,7 +2,7 @@ require "json"
 require 'pry'
 require './raw_forecast'
 
-class WeatherDayParser
+class WeatherParser
 
   attr_reader :input, :date_of_event, :ctemp_day_hilo, :ftemp_day_hilo,
               :rain_chance, :ctemp_event_hour, :ftemp_event_hour
@@ -26,7 +26,7 @@ class WeatherDayParser
           @ftemp_day_hilo.push(day["low"]["fahrenheit"])
           @ctemp_day_hilo.push(day["high"]["celsius"])
           @ctemp_day_hilo.push(day["low"]["celsius"])
-          @rain_chance = day["pop"]
+          @rain_chance = day["pop"].to_s
         end
       end
     elsif raw["hourly_forecast"]
@@ -34,7 +34,7 @@ class WeatherDayParser
         if hour["FCTTIME"]["epoch"] == date_of_event
           @ftemp_event_hour = hour["temp"]["english"]
           @ctemp_event_hour = hour["temp"]["metric"]
-          @rain_chance = hour["pop"]
+          @rain_chance = hour["pop"].to_s
         end
       end
     else
