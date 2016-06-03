@@ -1,7 +1,7 @@
 class RawForecast
 
   attr_reader :date_in_sec, :location_zip, :ctemp_day_hilo, :ftemp_day_hilo, :rain_chance,
-              :ctemp_event_hour, :ftemp_event_hour
+              :ctemp_event_hour, :ftemp_event_hour, :born_on_date
 
   def initialize date_in_sec:, location_zip:, born_on_date:
     @ctemp_day_hilo   = nil
