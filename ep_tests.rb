@@ -53,16 +53,18 @@ class EventPlannerBase < Minitest::Test
     }
   end
 
-focus
 def test_admin_special_access
   header *admin_user
   response = get "/db"
   assert_equal 200, response.status
 end
 
+focus
+
 def test_no_special_access_no_user
   response = get "/db"
   body = JSON.parse response.body
+
   binding.pry
   assert_equal 401, response.status
   assert_equal "error", body["status"]
@@ -73,7 +75,7 @@ def test_no_special_access_reg_user
   response = get "/db"
 
   body = JSON.parse response.body
-  binding.pry
+
   assert_equal 403, response.status
   assert_equal 0, body.length
 end
@@ -101,7 +103,7 @@ end
 
     def setup
       super
-      header reg_user
+      header *reg_user
     end
 
     def test_can_add_event
@@ -119,10 +121,6 @@ end
       assert_equal "2015-06-16", list.first["date"]
     end
 
-    focus
-    #def test_cannot_add_duplicate_event
-     # header "Authorization",
-
     def test_can_delete_event
       header "Authorization", "delete_event_test"
       post "/events", title: "Sue birthday", date: "2015-06-16", zip_code: "68805"
@@ -136,5 +134,14 @@ end
       assert_equal 1, list.count
     end
 
+    def test_cannot_add_duplicate_event
+      r1 = post "/events", rainy_birthday
+      r2 = post "/events", rainy_birthday
+
+      body = JSON.parse r2.body
+
+      assert_equal "error", body["status"]
     end
+
+  end
 end

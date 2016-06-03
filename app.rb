@@ -12,7 +12,6 @@ class EventPlanner < Sinatra::Base
   set :logging, true
   set :show_exceptions, false
   error do |e|
-    binding.pry
     raise e
   end
 
@@ -36,6 +35,15 @@ class EventPlanner < Sinatra::Base
 
   post "/events" do
     DB[username] ||= []
+    if event_is_duplicate?
+      halt(
+        json(
+          "status": "error",
+          "message": "#{params[:title]} has already been added."
+        )
+      )
+    end
+
     if event_is_valid? params
       DB[username].push create_new_event
       json(
@@ -48,7 +56,6 @@ class EventPlanner < Sinatra::Base
         "message": "There was a problem with your event: #{params[:title]}."
       )
     end
-
   end
 
   delete "/events" do
@@ -76,6 +83,16 @@ class EventPlanner < Sinatra::Base
   def event_is_valid? event
     true
   end
+
+  def event_is_duplicate?
+    x = DB[username].find do |o|
+      o.date        == params["date"]
+      o.title       == params["title"]
+      o.zip_code    == params["zip_code"]
+    end
+    x
+  end
+
 
   def create_new_event
     Event.new(
