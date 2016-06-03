@@ -3,6 +3,8 @@ require 'sinatra/json'
 require 'json'
 require 'pry'
 
+require './event'
+
 DB = {}
 
 class EventPlanner < Sinatra::Base
@@ -19,18 +21,13 @@ class EventPlanner < Sinatra::Base
 
   get "/events" do
     DB[username] ||= []
-    json DB[username]
+    show_events
   end
-
-  def event_is_valid? event
-    true
-  end
-
 
   post "/events" do
     DB[username] ||= []
     if event_is_valid? params
-      DB[username].push params
+      DB[username].push create_new_event
       json(
         "status": "success",
         "message": "#{params[:title]} successfully added."
@@ -45,19 +42,43 @@ class EventPlanner < Sinatra::Base
   end
 
   delete "/events" do
-    DB[username].delete_if { |k,v| k["title"] == params["title"]}
-    binding.pry
+    DB[username].delete_if { |e| e.title  == params["title"]}
+    json "'#{params["title"]}' has been removed."
   end
 
   def require_authorization!
     unless username
-      status 401
-      halt 401, json("status": "error", "error": "You must log in.")
+      halt(
+        401,
+        json("status": "error", "error": "You must log in.")
+      )
     end
   end
 
   def username
     request.env["HTTP_AUTHORIZATION"]
+  end
+
+  def event_is_valid? event
+    true
+  end
+
+  def create_new_event
+    Event.new(
+        title:        params[:title],
+        date:         params[:date],
+        zip_code:     params[:zip_code]
+    )
+  end
+
+  def show_events
+    events = []
+
+    DB[username].each do |event|
+     events.push event.to_h
+    end
+
+    json events
   end
 end
 

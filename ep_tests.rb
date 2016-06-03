@@ -16,6 +16,33 @@ class EventPlannerBase < Minitest::Test
     EventPlanner
   end
 
+  # event use cases
+
+  def socal_reggae
+    {
+      title: "Reggae Sunsplash",
+      date: "2015-06-17",
+      zip_code: "90210"
+    }
+  end
+
+  def rainy_birthday
+    {
+      title: "Bob birthday",
+      date: "2015-06-16",
+      zip_code: "98101"
+    }
+  end
+
+  # class FirstTimeLogIn < EventPlannerBase
+  #   def test_starts_with_empty_list
+  #     header "Authorization", "empty_user_test"
+  #     response = get "/events"
+
+  #     assert_equal 200, response.status
+  #     assert_equal "[]", response.body
+  #   end
+
   class NotLoggedIn < EventPlannerBase
     def test_login_is_required
       response = get "/events"
@@ -33,17 +60,9 @@ class EventPlannerBase < Minitest::Test
       header "Authorization", "zachh"
     end
 
-    def test_starts_with_empty_list
-      header "Authorization", "empty_user_test"
-      response = get "/events"
-
-      assert_equal 200, response.status
-      assert_equal "[]", response.body
-    end
-
     def test_can_add_event
-      post "/events", title: "Bob birthday", date: "2015-06-16"
-      post "/events", title: "Reggae Sunsplash", date: "2015-06-17"
+      post "/events", rainy_birthday
+      post "/events", socal_reggae
 
       response = get "/events"
 
@@ -51,15 +70,15 @@ class EventPlannerBase < Minitest::Test
 
       list = JSON.parse response.body
       assert_equal 2, list.count
+
       assert_equal "Bob birthday", list.first["title"]
       assert_equal "2015-06-16", list.first["date"]
     end
 
-focus
-
     def test_can_delete_event
-      post "/events", title: "Sue birthday", date: "2015-06-16"
-      post "/events", title: "Bonnaroo", date: "2015-06-17"
+      header "Authorization", "delete_event_test"
+      post "/events", title: "Sue birthday", date: "2015-06-16", zip_code: "68805"
+      post "/events", title: "Bonnaroo", date: "2015-06-17", zip_code: "34456"
 
       delete "/events", title: "Sue birthday"
 
@@ -68,26 +87,5 @@ focus
       list = JSON.parse response.body
       assert_equal 1, list.count
     end
-
-
-
   end
-
-
-  # def test_it_can_store_events
-  #   r = get "/events"
-
-  #   assert_equal 200, response.status
-  #   assert_equal "[]", response.body
-
-  #   post "/events", title: "My First Event"
-
-  #   r = get "/events"
-  #   assert_equal 200, response.status
-  #   assert_equal "My First Event", JSON.parse(response.body)
-  # end
-
-
-
-
 end
