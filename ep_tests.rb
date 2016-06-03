@@ -34,6 +34,33 @@ class EventPlannerBase < Minitest::Test
     }
   end
 
+
+def test_admin_special_access
+  header "Authorization", "ronswanson76:monkey25"
+  response = get "/db"
+  assert_equal 200, response.status
+end
+
+def test_no_special_access_no_user
+  response = get "/db"
+  body = JSON.parse response.body
+  binding.pry
+  assert_equal 401, response.status
+  assert_equal "error", body["status"]
+end
+focus
+def test_no_special_access_reg_user
+  header "Authorization", "mallory"
+  response = get "/db"
+#binding.pry
+  body = JSON.parse response.body
+  binding.pry
+  assert_equal 403, response.status
+  assert_equal 0, body.length
+end
+
+
+
   # class FirstTimeLogIn < EventPlannerBase
   #   def test_starts_with_empty_list
   #     header "Authorization", "empty_user_test"

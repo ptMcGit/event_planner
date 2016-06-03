@@ -4,6 +4,7 @@ require 'json'
 require 'pry'
 
 require './event'
+AdminUsername = ENV["ADMIN_USERNAME"] || File.read("./secret.txt").chomp
 
 DB = {}
 
@@ -17,6 +18,15 @@ class EventPlanner < Sinatra::Base
 
   before do
     require_authorization!
+  end
+
+  get "/db" do
+    if admin?
+      json DB
+    else
+      status 403
+      json []
+    end
   end
 
   get "/events" do
@@ -57,6 +67,10 @@ class EventPlanner < Sinatra::Base
 
   def username
     request.env["HTTP_AUTHORIZATION"]
+  end
+
+  def admin?
+    username == AdminUsername
   end
 
   def event_is_valid? event
