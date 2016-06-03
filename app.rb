@@ -44,17 +44,18 @@ class EventPlanner < Sinatra::Base
       )
     end
 
-    if event_is_valid? params
-      DB[username].push create_new_event
-      json(
-        "status": "success",
-        "message": "#{params[:title]} successfully added."
-      )
+    if event_is_valid?
+       DB[username].push create_new_event
+       json(
+         "status": "success",
+         "message": "#{params[:title]} successfully added."
+       )
     else
-      json(
-        "status": "error",
-        "message": "There was a problem with your event: #{params[:title]}."
-      )
+      halt
+    #   json(
+    #     "status": "error",
+    #     "message": "There was a problem with your event: #{params[:title]}."
+    #   )
     end
   end
 
@@ -65,6 +66,7 @@ class EventPlanner < Sinatra::Base
 
   def require_authorization!
     unless username
+
       halt(
         401,
         json("status": "error", "error": "You must log in.")
@@ -80,9 +82,46 @@ class EventPlanner < Sinatra::Base
     username == AdminUsername
   end
 
-  def event_is_valid? event
-    true
+  def date
+    Time.new( * (params["date"].split("-")) ).tv_sec
   end
+
+  def event_is_valid?
+    problems = []
+    params.keys.each do |field|
+      case field
+      when "date"
+          problems.push date_is_valid?
+      end
+    end
+    if ! problems.flatten.empty?
+      halt(
+        422,
+        json("status": "error", "error": problems.flatten)
+      )
+    else
+      return true
+    end
+  end
+
+
+
+  def date_is_valid?
+    problems = []
+    if date < Time.now.tv_sec
+      problems.push "The date you have entered has already passed"
+    end
+    begin
+      Time.new(params["date"]).tv_sec
+    rescue ArgumentError => e
+      problems.push "The date you entered is invalid."
+    end
+    problems
+  end
+
+
+
+
 
   def event_is_duplicate?
     x = DB[username].find do |o|
@@ -93,13 +132,12 @@ class EventPlanner < Sinatra::Base
     x
   end
 
-
   def create_new_event
-    Event.new(
+      Event.new(
         title:        params[:title],
         date:         params[:date],
         zip_code:     params[:zip_code]
-    )
+      )
   end
 
   def show_events

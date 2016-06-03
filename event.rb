@@ -2,16 +2,14 @@ class Event
 
   attr_reader :title, :date, :zip_code
 
-  def initialize title:, date:, zip_code:
-    @title      = title
-    @date       = date
-    @zip_code   = zip_code
+  def initialize title:, date:, zip_code:#, duration_sec:
+    @title          = title
+    @date           = date
+    #@duration_sec   = duration_sec
+    @zip_code       = zip_code
     # @forecast = RawForecast.new
   end
 
-  def date_in_sec date
-    Time.new( * (date.split("-")) ).tv_sec
-  end
 
   def to_h
     {
