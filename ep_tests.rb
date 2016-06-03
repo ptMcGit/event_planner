@@ -16,6 +16,17 @@ class EventPlannerBase < Minitest::Test
     EventPlanner
   end
 
+
+  # user authorization headers
+
+  def admin_user
+    ["Authorization", "ronswanson76:monkey25"]
+  end
+
+  def reg_user
+    ["Authorization", "mallory:ilikedogs45"]
+  end
+
   # event use cases
 
   def socal_reggae
@@ -34,9 +45,17 @@ class EventPlannerBase < Minitest::Test
     }
   end
 
+  def local_interview
+    {
+      title: "Job interview",
+      date: "2016-07-12",
+      zip_code: "27401"
+    }
+  end
 
+focus
 def test_admin_special_access
-  header "Authorization", "ronswanson76:monkey25"
+  header *admin_user
   response = get "/db"
   assert_equal 200, response.status
 end
@@ -48,18 +67,16 @@ def test_no_special_access_no_user
   assert_equal 401, response.status
   assert_equal "error", body["status"]
 end
-focus
+
 def test_no_special_access_reg_user
-  header "Authorization", "mallory"
+  header *reg_user
   response = get "/db"
-#binding.pry
+
   body = JSON.parse response.body
   binding.pry
   assert_equal 403, response.status
   assert_equal 0, body.length
 end
-
-
 
   # class FirstTimeLogIn < EventPlannerBase
   #   def test_starts_with_empty_list
@@ -84,7 +101,7 @@ end
 
     def setup
       super
-      header "Authorization", "zachh"
+      header reg_user
     end
 
     def test_can_add_event
@@ -102,6 +119,10 @@ end
       assert_equal "2015-06-16", list.first["date"]
     end
 
+    focus
+    #def test_cannot_add_duplicate_event
+     # header "Authorization",
+
     def test_can_delete_event
       header "Authorization", "delete_event_test"
       post "/events", title: "Sue birthday", date: "2015-06-16", zip_code: "68805"
@@ -114,5 +135,6 @@ end
       list = JSON.parse response.body
       assert_equal 1, list.count
     end
-  end
+
+    end
 end
