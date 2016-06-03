@@ -1,11 +1,12 @@
 class RawForecast
-
+  attr_accessor :ctemp_day_hilo, :ftemp_day_hilo, :rain_chance,
+                :ctemp_event_hour, :ftemp_event_hour
   attr_reader :date_of_event, :location_zip, :ctemp_day_hilo, :ftemp_day_hilo, :rain_chance,
               :ctemp_event_hour, :ftemp_event_hour, :born_on_date
 
   def initialize date_of_event:, location_zip:, born_on_date:
-    @ctemp_day_hilo   = nil
-    @ftemp_day_hilo   = nil
+    @ctemp_day_hilo   = []
+    @ftemp_day_hilo   = []
     @rain_chance      = nil
     @date_of_event    = date_of_event
     @born_on_date     = born_on_date
