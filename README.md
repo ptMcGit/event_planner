@@ -29,24 +29,32 @@ Store events, and show weather forecast for the event date.
 
 ### RawForecast Class
 
-Carries temperature (F and C (high and low)),  rain percentage, date, location?
-
 From Wunderground data
 
 - @ctemp_day_hilo  an array with [high, low]
 - @ftemp_day_hilo an array with [high, low]
 - @rain_chance
-- @date_in_sec
+- @date_of_event
+- @born_on_date
 - @zip_code
 - @ctemp_event_hour
 - @ftemp_event_hour
-
 
 #### Methods
 
 - to_h              ?
 - to_s              ?
 - to_yyyy_mm_dd     ? and other date formats?
+
+- #get_best_forecast
+
+  - checks current date vs. event date
+  - chooses appropriate method:
+
+    - #beyond_10
+    - #10_to_3
+    - #under_3
+
 
 ## Inter-app Communication?
 
