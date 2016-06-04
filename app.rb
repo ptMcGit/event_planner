@@ -94,7 +94,10 @@ class EventPlanner < Sinatra::Base
           problems.push date_is_valid?
       end
     end
-    unless problems.flatten.empty?
+
+    problems.flatten!
+
+    unless problems.empty?
       halt(
         422,
         json("status": "error", "error": problems.flatten)
@@ -127,10 +130,11 @@ class EventPlanner < Sinatra::Base
   end
 
   def create_new_event
-      Event.new(
-        title:        params[:title],
-        date:         params[:date],
-        zip_code:     params[:zip_code]
+    Event.new(
+        title:         params[:title],
+        date:          params[:date],
+        zip_code:      params[:zip_code],
+        duration_sec:  params[:duration_sec]
       )
   end
 
@@ -139,9 +143,9 @@ class EventPlanner < Sinatra::Base
     DB[username].each do |event|
      events.push event.to_h
     end
-
     json events
   end
+
 end
 
 EventPlanner.run! if $PROGRAM_NAME == __FILE__

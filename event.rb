@@ -1,20 +1,21 @@
 class Event
 
-  attr_reader :title, :date, :zip_code
+  attr_reader :title, :date, :zip_code, :duration_sec
 
-  def initialize title:, date:, zip_code:#, duration_sec:
+  def initialize title:, date:, zip_code:, duration_sec:
     @title          = title
     @date           = date
-    #@duration_sec   = duration_sec
+    @duration_sec   = duration_sec
     @zip_code       = zip_code
     # @forecast = RawForecast.new
   end
 
-
   def to_h
     {
-      "title"   => @title,
-      "date"    => @date
+      "title"           => @title,
+      "date"            => @date,
+      "zip_code"        => @zip_code,
+      "duration_sec"    => @duration_sec
     }
 
     # hash = {}
