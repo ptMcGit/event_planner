@@ -110,21 +110,21 @@ class EventPlannerBase < Minitest::Test
     end
 
 
-
     def test_can_add_event
       post "/events", Rainy_birthday
       post "/events", Socal_reggae
 
       response = get "/events"
-
       assert_equal 200, response.status
 
       list = JSON.parse response.body
+      binding.pry
 
       assert_equal 2, list.count
 
-      assert_equal "Bob birthday", list.first["title"]
+      assert_equal Rainy_birthday[:title], list.first["title"]
       assert_equal Rainy_birthday[:date], list.first["date"]
+      assert_equal Rainy_birthday[:zip_code], list.first["zip_code"]
     end
 
     def test_can_delete_event
@@ -156,10 +156,15 @@ class EventPlannerBase < Minitest::Test
       body = JSON.parse r1.body
 
       assert_equal "error", body["status"]
-
     end
 
-
-
+#    def test_date_must_be_valid_calendar_date
+#      assert_raises do
+#        r = post "/events",
+#             title: "My forty-second birthday",
+#             date: "?xasf23",
+#             zip_code: "27401"
+#     end
+#    end
   end
 end

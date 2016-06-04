@@ -13,6 +13,7 @@ class EventPlanner < Sinatra::Base
   set :show_exceptions, false
   error do |e|
     raise e
+    binding.pry
   end
 
   before do
@@ -35,23 +36,14 @@ class EventPlanner < Sinatra::Base
 
   post "/events" do
     DB[username] ||= []
-    if event_is_duplicate?
-      halt(
-        json(
-          "status": "error",
-          "message": "#{params[:title]} has already been added."
-        )
-      )
-    end
-
     if event_is_valid?
        DB[username].push create_new_event
        json(
          "status": "success",
          "message": "#{params[:title]} successfully added."
        )
-    else
-      halt
+    # else
+    #   halt
     #   json(
     #     "status": "error",
     #     "message": "There was a problem with your event: #{params[:title]}."
@@ -66,7 +58,6 @@ class EventPlanner < Sinatra::Base
 
   def require_authorization!
     unless username
-
       halt(
         401,
         json("status": "error", "error": "You must log in.")
@@ -88,13 +79,22 @@ class EventPlanner < Sinatra::Base
 
   def event_is_valid?
     problems = []
+    if event_is_duplicate?
+      halt(
+        json(
+          "status": "error",
+          "message": "#{params[:title]} has already been added."
+        )
+      )
+    end
+
     params.keys.each do |field|
       case field
       when "date"
           problems.push date_is_valid?
       end
     end
-    if ! problems.flatten.empty?
+    unless problems.flatten.empty?
       halt(
         422,
         json("status": "error", "error": problems.flatten)
@@ -104,24 +104,18 @@ class EventPlanner < Sinatra::Base
     end
   end
 
-
-
   def date_is_valid?
     problems = []
-    if date < Time.now.tv_sec
-      problems.push "The date you have entered has already passed"
-    end
     begin
       Time.new(params["date"]).tv_sec
     rescue ArgumentError => e
       problems.push "The date you entered is invalid."
     end
+    if date < Time.now.tv_sec
+      problems.push "The date you have entered has already passed"
+    end
     problems
   end
-
-
-
-
 
   def event_is_duplicate?
     x = DB[username].find do |o|
@@ -142,7 +136,6 @@ class EventPlanner < Sinatra::Base
 
   def show_events
     events = []
-
     DB[username].each do |event|
      events.push event.to_h
     end
