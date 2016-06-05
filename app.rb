@@ -4,6 +4,8 @@ require 'json'
 require 'pry'
 
 require './event'
+require './raw_forecast'
+
 AdminUsername = ENV["ADMIN_USERNAME"] || File.read("./secret.txt").chomp
 
 DB = {}
