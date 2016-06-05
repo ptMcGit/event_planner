@@ -16,7 +16,6 @@ class WeatherData
   end
 
   def update
-    #do the actual updating
     request["rain_chance"] = parsed_info.rain_chance
     request["ctemp_event_hour"] = parsed_info.ctemp_event_hour
     request["ftemp_event_hour"] = parsed_info.ftemp_event_hour
@@ -26,14 +25,12 @@ class WeatherData
   end
 
   def get_forecast
-    #sends back the updated rawforecast object
     get_data_from_wunderground
     update
     return request
   end
 
   def get_data_from_wunderground
-    #use the parser here
     if time - Time.now.tv_sec <= 259200
       data_query = HTTParty.get "http://api.wunderground.com/api/#{ENV["WUNDERGROUND_KEY"]}/features/hourly10day/q/#{location.to_i}.json"
     elsif time - Time.now.tv_sec <= 864000
