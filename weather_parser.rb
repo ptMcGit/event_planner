@@ -10,8 +10,8 @@ class WeatherParser
   def initialize input, date_of_event
     @input            = input
     @date_of_event    = date_of_event
-    @ctemp_day_hilo   = []
-    @ftemp_day_hilo   = []
+    @ctemp_day_hilo   = nil
+    @ftemp_day_hilo   = nil
     @rain_chance      = nil
     @ctemp_event_hour = nil
     @ftemp_event_hour = nil
@@ -21,9 +21,9 @@ class WeatherParser
     if input["forecast"]
       input["forecast"]["simpleforecast"]["forecastday"].each do |day|
         if (day["date"]["epoch"].to_i >= date_of_event.to_i - 43200) && (day["date"]["epoch"].to_i < date_of_event.to_i + 43200)
-          @ftemp_day_hilo.push(day["high"]["fahrenheit"])
+          @ftemp_day_hilo = [(day["high"]["fahrenheit"])]
           @ftemp_day_hilo.push(day["low"]["fahrenheit"])
-          @ctemp_day_hilo.push(day["high"]["celsius"])
+          @ctemp_day_hilo = [(day["high"]["celsius"])]
           @ctemp_day_hilo.push(day["low"]["celsius"])
           @rain_chance = day["pop"].to_s
         end
@@ -37,7 +37,7 @@ class WeatherParser
         end
       end
     else
-      raise "Not valid data format"
+      #do nothing
     end
   end
 end
