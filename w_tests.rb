@@ -23,7 +23,7 @@ class RawForecastTest < Minitest::Test
                     "ctemp_day_hilo" => nil,
                     "ctemp_event_hour" => nil,
                     "date_of_event" => "1464984000",
-                    "forecast_filled_date" => Time.now,
+                    "forecast_filled_date" => Time.now.to_s,
                     "ftemp_day_hilo" => nil,
                     "ftemp_event_hour" => nil,
                     "location_zip" => "27701",
@@ -99,7 +99,7 @@ class WeatherDataTestBasic < Minitest::Test
                     "ctemp_day_hilo" => nil,
                     "ctemp_event_hour" => nil,
                     "date_of_event" => "1464984000",
-                    "forecast_filled_date" => Time.now,
+                    "forecast_filled_date" => Time.now.to_s,
                     "ftemp_day_hilo" => nil,
                     "ftemp_event_hour" => nil,
                     "location_zip" => "27701",
@@ -122,7 +122,7 @@ class WeatherDataTestBasic < Minitest::Test
   end
 
   def test_can_get_time_from_incoming_request
-    assert_equal "1464984000", processing.time
+    assert_equal 1464984000, processing.time
   end
 
   def test_can_get_location_from_incoming_request
@@ -154,7 +154,17 @@ class WeatherDataTestAdv < Minitest::Test
   end
 
   def request!
-    RawForecast.new date_of_event: (Time.now.tv_sec.to_s), location_zip: "27701", born_on_date: "1464984000"
+    # RawForecast.new date_of_event: (Time.now.tv_sec.to_s), location_zip: "27701", born_on_date: "1464984000"
+    {
+                    "ctemp_day_hilo" => nil,
+                    "ctemp_event_hour" => nil,
+                    "date_of_event" => "1464984000",
+                    "forecast_filled_date" => nil,
+                    "ftemp_day_hilo" => nil,
+                    "ftemp_event_hour" => nil,
+                    "location_zip" => "27701",
+                    "rain_chance" => nil
+                  }
   end
 
   def build_processing
@@ -170,6 +180,8 @@ class WeatherDataTestAdv < Minitest::Test
   #   refute_equal nil, hourly_info.ctemp_event_hour
   #   refute_equal nil, hourly_info.ftemp_event_hour
   # end
+
+  # def test_can_get_forecast_
 
 
 
