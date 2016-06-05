@@ -77,12 +77,6 @@ class WeatherParserTest < Minitest::Test
     assert_equal "88", hourly_info.ftemp_event_hour
   end
 
-  def test_can_raise_error_if_incorrect_format
-    assert_raises "Not valid data format" do
-      forecast_info = WeatherParser.new(JSON.parse(File.read(file_path("example_data_conditions"))),"1464984000")
-      forecast_info.parse!
-    end
-  end
 end
 
 class WeatherDataTestBasic < Minitest::Test
@@ -165,7 +159,20 @@ class WeatherDataTestAdv < Minitest::Test
     {
                     "ctemp_day_hilo" => nil,
                     "ctemp_event_hour" => nil,
-                    "date_of_event" => "1465593086",
+                    "date_of_event" => (Time.now.tv_sec + 432000).to_s,
+                    "forecast_filled_date" => nil,
+                    "ftemp_day_hilo" => nil,
+                    "ftemp_event_hour" => nil,
+                    "location_zip" => "27701",
+                    "rain_chance" => nil
+                  }
+  end
+
+  def request3
+    {
+                    "ctemp_day_hilo" => nil,
+                    "ctemp_event_hour" => nil,
+                    "date_of_event" => (Time.now.tv_sec + 1036800).to_s,
                     "forecast_filled_date" => nil,
                     "ftemp_day_hilo" => nil,
                     "ftemp_event_hour" => nil,
@@ -175,7 +182,6 @@ class WeatherDataTestAdv < Minitest::Test
   end
 
   def test_can_get_forecast_within_3days
-
     forecast = (WeatherData.new request1).get_forecast
 
     refute_equal nil, forecast["rain_chance"]
@@ -187,7 +193,6 @@ class WeatherDataTestAdv < Minitest::Test
   end
 
   def test_can_get_forecast_between_3days_and_10days
-
     forecast = (WeatherData.new request2).get_forecast
 
     refute_equal nil, forecast["rain_chance"]
@@ -198,9 +203,15 @@ class WeatherDataTestAdv < Minitest::Test
     assert_equal nil, forecast["ftemp_event_hour"]
   end
 
-  # def test_can_get_forecast_
+  def test_cannot_get_forecast_beyond_10days
+    forecast = (WeatherData.new request3).get_forecast
 
-
+    assert_equal nil, forecast["rain_chance"]
+    assert_equal nil, forecast["ctemp_event_hour"]
+    assert_equal nil, forecast["ftemp_event_hour"]
+    assert_equal nil, forecast["ctemp_day_hilo"]
+    assert_equal nil, forecast["ftemp_day_hilo"]
+  end
 
 end
 
