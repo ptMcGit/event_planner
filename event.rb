@@ -46,16 +46,8 @@ class Event
       "date"            => @date,
       "zip_code"        => @zip_code,
       "duration_sec"    => @duration_sec,
-      "forecasts"       => "forecast_hash_here"
-      #"forecasts"       => populate_forecasts
+      "forecasts"       => @forecasts
     }
-
-    # hash = {}
-    # self.instance_variables.each do |iv|
-    #   hash[iv.to_s.delete("@")] =
-    #     self.instance_variable_get(iv)
-    # end
-    # hash
   end
 
 end

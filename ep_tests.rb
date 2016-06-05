@@ -99,6 +99,7 @@ class EventPlannerBase < Minitest::Test
       assert_equal Rainy_birthday[:date], list.first["date"]
       assert_equal Rainy_birthday[:zip_code], list.first["zip_code"]
       assert_equal Rainy_birthday[:duration_sec], list.first["duration_sec"]
+      binding.pry
     end
 
     def test_can_delete_event
