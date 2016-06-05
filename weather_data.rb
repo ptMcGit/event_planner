@@ -22,7 +22,7 @@ class WeatherData
     request["ftemp_event_hour"] = parsed_info.ftemp_event_hour
     request["ctemp_day_hilo"] = parsed_info.ctemp_day_hilo
     request["ftemp_day_hilo"] = parsed_info.ftemp_day_hilo
-    request["forecast_filled_date"] = Time.now.to_s
+    request["forecast_filled_date"] = Time.now.tv_sec.to_s
   end
 
   def get_forecast
@@ -34,15 +34,16 @@ class WeatherData
 
   def get_data_from_wunderground
     #use the parser here
-    if time - Time.now >= 259200
+    if time - Time.now.tv_sec <= 259200
       data_query = HTTParty.get "http://api.wunderground.com/api/#{ENV["WUNDERGROUND_KEY"]}/features/hourly10day/q/#{location.to_i}.json"
-    elsif time - Time.now >= 864000
+    elsif time - Time.now.tv_sec <= 864000
       data_query = HTTParty.get "http://api.wunderground.com/api/#{ENV["WUNDERGROUND_KEY"]}/features/forecast10day/q/#{location.to_i}.json"
     else
       data_query = {}.to_json
     end
 
-    @parsed_info = WeatherParser.new(data_query)
+    @parsed_info = WeatherParser.new(data_query, time)
+    @parsed_info.parse!
 
   end
 
