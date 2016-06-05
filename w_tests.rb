@@ -45,8 +45,8 @@ class WeatherParserTest < Minitest::Test
 
   def test_can_parse_10day_daily
     daily_info = WeatherParser.new(JSON.parse(File.read(file_path("example_weather_data_by_day"))),"1341381600")
-    assert_equal [], daily_info.ctemp_day_hilo
-    assert_equal [], daily_info.ftemp_day_hilo
+    assert_equal nil, daily_info.ctemp_day_hilo
+    assert_equal nil, daily_info.ftemp_day_hilo
     assert_equal nil, daily_info.rain_chance
     assert_equal nil, daily_info.ctemp_event_hour
     assert_equal nil, daily_info.ftemp_event_hour
@@ -62,16 +62,16 @@ class WeatherParserTest < Minitest::Test
 
   def test_can_parse_10day_hourly
     hourly_info = WeatherParser.new(JSON.parse(File.read(file_path("example_weather_data_by_hour"))),"1464984000")
-    assert_equal [], hourly_info.ctemp_day_hilo
-    assert_equal [], hourly_info.ftemp_day_hilo
+    assert_equal nil, hourly_info.ctemp_day_hilo
+    assert_equal nil, hourly_info.ftemp_day_hilo
     assert_equal nil, hourly_info.rain_chance
     assert_equal nil, hourly_info.ctemp_event_hour
     assert_equal nil, hourly_info.ftemp_event_hour
 
     hourly_info.parse!
 
-    assert_equal [], hourly_info.ctemp_day_hilo
-    assert_equal [], hourly_info.ftemp_day_hilo
+    assert_equal nil, hourly_info.ctemp_day_hilo
+    assert_equal nil, hourly_info.ftemp_day_hilo
     assert_equal "15", hourly_info.rain_chance
     assert_equal "31", hourly_info.ctemp_event_hour
     assert_equal "88", hourly_info.ftemp_event_hour
@@ -147,18 +147,12 @@ end
 
 class WeatherDataTestAdv < Minitest::Test
 
-  attr_reader :processing
-
-  def setup
-    @processing = build_processing
-  end
-
-  def request!
+  def request1
     # RawForecast.new date_of_event: (Time.now.tv_sec.to_s), location_zip: "27701", born_on_date: "1464984000"
     {
                     "ctemp_day_hilo" => nil,
                     "ctemp_event_hour" => nil,
-                    "date_of_event" => "1464984000",
+                    "date_of_event" => (Time.now.tv_sec + 86000).to_s,
                     "forecast_filled_date" => nil,
                     "ftemp_day_hilo" => nil,
                     "ftemp_event_hour" => nil,
@@ -167,19 +161,42 @@ class WeatherDataTestAdv < Minitest::Test
                   }
   end
 
-  def build_processing
-    WeatherData.new request!
+  def request2
+    {
+                    "ctemp_day_hilo" => nil,
+                    "ctemp_event_hour" => nil,
+                    "date_of_event" => "1465593086",
+                    "forecast_filled_date" => nil,
+                    "ftemp_day_hilo" => nil,
+                    "ftemp_event_hour" => nil,
+                    "location_zip" => "27701",
+                    "rain_chance" => nil
+                  }
   end
 
-  # def test_can_make_data_query_to_wunderground_with_request_info_hourly
-  #   data_query = HTTParty.get "http://api.wunderground.com/api/#{ENV["WUNDERGROUND_KEY"]}/features/hourly10day/q/#{processing.location.to_i}.json"
-  #   hourly_info = WeatherParser.new(data_query,processing.time)
-  #   hourly_info.parse!
-  #
-  #   refute_equal nil, hourly_info.rain_chance
-  #   refute_equal nil, hourly_info.ctemp_event_hour
-  #   refute_equal nil, hourly_info.ftemp_event_hour
-  # end
+  def test_can_get_forecast_within_3days
+
+    forecast = (WeatherData.new request1).get_forecast
+
+    refute_equal nil, forecast["rain_chance"]
+    refute_equal nil, forecast["ctemp_event_hour"]
+    refute_equal nil, forecast["ftemp_event_hour"]
+
+    assert_equal nil, forecast["ctemp_day_hilo"]
+    assert_equal nil, forecast["ftemp_day_hilo"]
+  end
+
+  def test_can_get_forecast_between_3days_and_10days
+
+    forecast = (WeatherData.new request2).get_forecast
+
+    refute_equal nil, forecast["rain_chance"]
+    refute_equal nil, forecast["ctemp_day_hilo"]
+    refute_equal nil, forecast["ftemp_day_hilo"]
+
+    assert_equal nil, forecast["ctemp_event_hour"]
+    assert_equal nil, forecast["ftemp_event_hour"]
+  end
 
   # def test_can_get_forecast_
 
