@@ -19,14 +19,18 @@ class WeatherParser
 
   def parse!
     if input["forecast"]
-      day = input["forecast"]["simpleforecast"]["forecastday"].select{ |day| (day["date"]["epoch"].to_i >= date_of_event.to_i - 43200) && (day["date"]["epoch"].to_i < date_of_event.to_i + 43200)}
+      day = input["forecast"]["simpleforecast"]["forecastday"].select{ |day|
+            (day["date"]["epoch"].to_i >= date_of_event.to_i - 43200) &&
+              (day["date"]["epoch"].to_i < date_of_event.to_i + 43200)}
         @ftemp_day_hilo = [(day.first["high"]["fahrenheit"])]
         @ftemp_day_hilo.push(day.first["low"]["fahrenheit"])
         @ctemp_day_hilo = [(day.first["high"]["celsius"])]
         @ctemp_day_hilo.push(day.first["low"]["celsius"])
         @rain_chance = day.first["pop"].to_s
     elsif input["hourly_forecast"]
-      hour = input["hourly_forecast"].select{ |hour| (hour["FCTTIME"]["epoch"].to_i >= date_of_event.to_i - 1800) && (hour["FCTTIME"]["epoch"].to_i < date_of_event.to_i + 1800)}
+      hour = input["hourly_forecast"].select{ |hour|
+            (hour["FCTTIME"]["epoch"].to_i >= date_of_event.to_i - 1800) &&
+              (hour["FCTTIME"]["epoch"].to_i < date_of_event.to_i + 1800)}
         @ftemp_event_hour = hour.first["temp"]["english"]
         @ctemp_event_hour = hour.first["temp"]["metric"]
         @rain_chance = hour.first["pop"].to_s
