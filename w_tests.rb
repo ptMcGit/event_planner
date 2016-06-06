@@ -15,15 +15,14 @@ class Minitest::Test
   end
 end
 
-class RawForecastTest < Minitest::Test
+class ReadRequestTest < Minitest::Test
 
   def forecast_request
-    # RawForecast.new date_of_event: "1464984000", location_zip: "27701", born_on_date: "1464984000"
     {
                     "ctemp_day_hilo" => nil,
                     "ctemp_event_hour" => nil,
                     "date_of_event" => "1464984000",
-                    "forecast_filled_date" => Time.now.to_s,
+                    "forecast_filled_date" => nil,
                     "ftemp_day_hilo" => nil,
                     "ftemp_event_hour" => nil,
                     "location_zip" => "27701",
@@ -44,7 +43,7 @@ end
 class WeatherParserTest < Minitest::Test
 
   def test_can_parse_10day_daily
-    daily_info = WeatherParser.new(JSON.parse(File.read(file_path("example_weather_data_by_day"))),"1341381600")
+    daily_info = WeatherParser.new(JSON.parse(File.read(file_path("example_weather_data_by_day"))),(1341381600+345600).to_s)
     assert_equal nil, daily_info.ctemp_day_hilo
     assert_equal nil, daily_info.ftemp_day_hilo
     assert_equal nil, daily_info.rain_chance
@@ -53,15 +52,15 @@ class WeatherParserTest < Minitest::Test
 
     daily_info.parse!
 
-    assert_equal ["24", "13"], daily_info.ctemp_day_hilo
-    assert_equal ["75", "55"], daily_info.ftemp_day_hilo
+    assert_equal ["23", "13"], daily_info.ctemp_day_hilo
+    assert_equal ["73", "55"], daily_info.ftemp_day_hilo
     assert_equal "0", daily_info.rain_chance
     assert_equal nil, daily_info.ctemp_event_hour
     assert_equal nil, daily_info.ftemp_event_hour
   end
 
   def test_can_parse_10day_hourly
-    hourly_info = WeatherParser.new(JSON.parse(File.read(file_path("example_weather_data_by_hour"))),"1464984000")
+    hourly_info = WeatherParser.new(JSON.parse(File.read(file_path("example_weather_data_by_hour"))),(1464984000+25200).to_s)
     assert_equal nil, hourly_info.ctemp_day_hilo
     assert_equal nil, hourly_info.ftemp_day_hilo
     assert_equal nil, hourly_info.rain_chance
@@ -72,9 +71,9 @@ class WeatherParserTest < Minitest::Test
 
     assert_equal nil, hourly_info.ctemp_day_hilo
     assert_equal nil, hourly_info.ftemp_day_hilo
-    assert_equal "15", hourly_info.rain_chance
-    assert_equal "31", hourly_info.ctemp_event_hour
-    assert_equal "88", hourly_info.ftemp_event_hour
+    assert_equal "44", hourly_info.rain_chance
+    assert_equal "24", hourly_info.ctemp_event_hour
+    assert_equal "75", hourly_info.ftemp_event_hour
   end
 
 end
@@ -88,12 +87,11 @@ class WeatherDataTestBasic < Minitest::Test
   end
 
   def request!
-    # RawForecast.new date_of_event: "1464984000", location_zip: "27701", born_on_date: "1464984000"
     {
                     "ctemp_day_hilo" => nil,
                     "ctemp_event_hour" => nil,
                     "date_of_event" => "1464984000",
-                    "forecast_filled_date" => Time.now.to_s,
+                    "forecast_filled_date" => nil,
                     "ftemp_day_hilo" => nil,
                     "ftemp_event_hour" => nil,
                     "location_zip" => "27701",
@@ -142,7 +140,6 @@ end
 class WeatherDataTestAdv < Minitest::Test
 
   def request1
-    # RawForecast.new date_of_event: (Time.now.tv_sec.to_s), location_zip: "27701", born_on_date: "1464984000"
     {
                     "ctemp_day_hilo" => nil,
                     "ctemp_event_hour" => nil,
@@ -182,6 +179,7 @@ class WeatherDataTestAdv < Minitest::Test
   end
 
   def test_can_get_forecast_within_3days
+    skip
     forecast = (WeatherData.new request1).get_forecast
 
     refute_equal nil, forecast["rain_chance"]
@@ -193,6 +191,7 @@ class WeatherDataTestAdv < Minitest::Test
   end
 
   def test_can_get_forecast_between_3days_and_10days
+    skip
     forecast = (WeatherData.new request2).get_forecast
 
     refute_equal nil, forecast["rain_chance"]
@@ -204,6 +203,7 @@ class WeatherDataTestAdv < Minitest::Test
   end
 
   def test_cannot_get_forecast_beyond_10days
+    skip
     forecast = (WeatherData.new request3).get_forecast
 
     assert_equal nil, forecast["rain_chance"]
