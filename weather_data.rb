@@ -6,14 +6,15 @@ require './raw_forecast'
 
 class WeatherData
   attr_accessor :request
-  attr_reader :request, :time, :location, :parsed_info, :url
+  attr_reader :request, :time, :location, :parsed_info, :url, :token
 
   def initialize request
     @request  = request
     @time     = request["date_of_event"].to_i
     @location = request["location_zip"]
     @parsed_info = nil
-    @url = "http://api.wunderground.com/api/#{ENV["WUNDERGROUND_KEY"]}/features"
+    @token = token = ENV["WUNDERGROUND_KEY"] || File.read(token.txt)
+    @url = "http://api.wunderground.com/api/#{token}/features"
   end
 
   def update
