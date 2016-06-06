@@ -11,11 +11,11 @@ class WeatherData
 
   def initialize request
     @request  = request
-    @time = request.date_of_event.to_i
-    @location = request.location_zip
+    @time     = request["date_of_event"].to_i
+    @location = request["location_zip"]
     @parsed_info = nil
-    @token = token = ENV["WUNDERGROUND_KEY"] || File.read("./token.txt").chomp
-    @url = "http://api.wunderground.com/api/#{token}/features"
+    @token    = ENV["WUNDERGROUND_KEY"] || File.read("./token.txt").chomp
+    @url      = "http://api.wunderground.com/api/#{token}/features"
   end
 
   def update
