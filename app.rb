@@ -5,6 +5,7 @@ require 'pry'
 
 require './event'
 require './raw_forecast'
+require './weather_data'
 
 AdminUsername = ENV["ADMIN_USERNAME"] || File.read("./secret.txt").chomp
 
