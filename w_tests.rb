@@ -175,6 +175,18 @@ class WeatherDataTestAdv < Minitest::Test
                   }
   end
 
+  def request4
+    {"date_of_event"=>"1465170000",
+    "location_zip"=>"90807",
+    # "rain_chance"=>nil,
+    # "ctemp_event_hour"=>nil,
+    # "ftemp_event_hour"=>nil,
+    # "ctemp_day_hilo"=>nil,
+    # "ftemp_day_hilo"=>nil,
+    # "forecast_filled_date"=>nil
+  }
+  end
+
   def test_can_get_forecast_within_3days
     skip
     forecast = (WeatherData.new request1).get_forecast
