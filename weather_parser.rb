@@ -1,6 +1,5 @@
 require "json"
 require 'pry'
-require './raw_forecast'
 
 class WeatherParser
 

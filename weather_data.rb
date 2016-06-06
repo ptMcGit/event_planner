@@ -2,7 +2,6 @@ require 'pry'
 require 'json'
 require 'httparty'
 require './weather_parser'
-require './raw_forecast'
 
 
 class WeatherData
