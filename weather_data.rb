@@ -33,7 +33,9 @@ class WeatherData
   end
 
   def get_data_from_wunderground
-    if time - Time.now.tv_sec <= 259200
+    if time - Time.now.tv_sec < 0
+      data_query = {}.to_json
+    elsif time - Time.now.tv_sec <= 259200
       data_query = HTTParty.get "#{url}/hourly10day/q/#{location.to_i}.json"
     elsif time - Time.now.tv_sec <= 864000
       data_query = HTTParty.get "#{url}/forecast10day/q/#{location.to_i}.json"
