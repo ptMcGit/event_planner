@@ -4,6 +4,9 @@ require 'httparty'
 
 require 'pry'
 
+Url = "http://localhost:4567"
+#Url = "http://tiy-jjzh-event-planner.herokuapp.com"
+
 class MyApi
   attr_reader :headers, :url
 
@@ -19,13 +22,21 @@ class MyApi
     make_request :get, "/events"
   end
 
-  def create_event #title:, date:, zip_code:
-    #make_request :post, "/events", title: title, date: date, zip_code: zip_code
+  def create_new_event title:, date:, zip_code:, duration_sec:
+                            make_request :post, "/events",  query: {
+                                           title: title,
+                                           date: date,
+                                           zip_code: zip_code,
+                                           duration_sec: duration_sec
+                                         }
   end
 
-#  def add_new_event title
-#    make_request :post, "/events", body: { title: title }
-#  end
+  def delete_event title:
+                     make_request :delete, "/events", query: {
+                                    title: title
+                                  }
+  end
+
 
   def make_request verb, endpoint, options={}
     options[:headers] = headers
@@ -42,21 +53,29 @@ class MyApi
   end
 end
 
-#api = MyApi.new "https://__your_app_here__.herokuapp.com"
- api = MyApi.new "http://localhost:4567"
 
-HTTParty.get("http://localhost:4567/events", headers: { "Authorization" => "zadf:3456"} )
 
-api.login_as "zdh", "tpt345"
+api = MyApi.new Url
+# api = MyApi.new "http://localhost:4567"
+
+#HTTParty.get("http://localhost:4567/events", headers: { "Authorization" => "zadf:3456"} )
+
+
 
 binding.pry
 
-# puts "Welcome to event planner."
-# sleep 1
+#until exit_program
+
+  puts "Welcome to event planner."
+  api.login_as "zdh", "tpt345"
+
+
+
 
 # puts "~MAIN MENU~~~~~~~~~~~~~~~~~~"
 
 # puts "\n\t1. Log in"
+# puts "\n\t2. Create new account"
 # puts "\n\t2. Exit"
 # gets ": "
 
