@@ -7,7 +7,7 @@ class Event
     @date           = date
     @duration_sec   = duration_sec
     @zip_code       = zip_code
-    @forecasts      = {}
+    @forecasts      = []
   end
 
   def find_available_forecast forecast_date
