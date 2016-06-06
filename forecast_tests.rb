@@ -31,8 +31,8 @@ class EventTestCase < Event
     @forecasts = dummy_forecasts
   end
 
-  def get_forecast forecast_date, zip_code
-    get_dummy_forecast(forecast_date.to_s, zip_code)
+  def get_forecast forecast_date
+    get_dummy_forecast forecast_date.to_s, @zip_code
   end
 
 

@@ -38,7 +38,7 @@ class Event
       if old_f.nil? || is_stale?(old_f)
 
 
-        new_forecasts.push get_forecast((f + @date.to_i).to_s, @zip_code)
+        new_forecasts.push get_forecast( (f + @date.to_i).to_s )
       else
         new_forecasts.push old_f
       end
