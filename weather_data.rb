@@ -13,7 +13,7 @@ class WeatherData
     @time     = request["date_of_event"].to_i
     @location = request["location_zip"]
     @parsed_info = nil
-    @token = token = ENV["WUNDERGROUND_KEY"] || File.read(token.txt)
+    @token = ENV["WUNDERGROUND_KEY"] || File.read(token.txt)
     @url = "http://api.wunderground.com/api/#{token}/features"
   end
 
