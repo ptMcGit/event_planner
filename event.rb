@@ -46,10 +46,17 @@ class Event
 
   def get_forecast forecast_date
     rf =  {
-      date_of_event:    forecast_date,
-      location_zip:     @zip_code
+      "date_of_event"       => forecast_date,
+      "location_zip"        => @zip_code,
+      "rain_chance"         => nil,
+      "ctemp_event_hour"    => nil,
+      "ftemp_event_hour"    => nil,
+      "ctemp_day_hilo"      => nil,
+      "ftemp_day_hilo"      => nil,
+      "forecast_filled_date"=> nil
     }
-    (WeatherData.new(rf)).get_forecast
+    w = (WeatherData.new(rf)).get_forecast
+    binding.pry
   end
 
   def to_h
