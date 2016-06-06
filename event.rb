@@ -36,8 +36,6 @@ class Event
     (0..@duration_sec.to_i).step(3600).to_a.each do |f|
       old_f = find_available_forecast((f + @date.to_i).to_s)
       if old_f.nil? || is_stale?(old_f)
-
-
         new_forecasts.push get_forecast( (f + @date.to_i).to_s )
       else
         new_forecasts.push old_f
@@ -47,12 +45,18 @@ class Event
   end
 
   def get_forecast forecast_date
-    rf =  RawForecast.new(
-      date_of_event:    forecast_date,
-      location_zip:     @zip_code
-    )
-    w = WeatherData.new(rf)
-    w.get_forecast
+    rf =  {
+      "date_of_event"       => forecast_date,
+      "location_zip"        => @zip_code,
+      "rain_chance"         => nil,
+      "ctemp_event_hour"    => nil,
+      "ftemp_event_hour"    => nil,
+      "ctemp_day_hilo"      => nil,
+      "ftemp_day_hilo"      => nil,
+      "forecast_filled_date"=> nil
+    }
+    w = (WeatherData.new(rf)).get_forecast
+    binding.pry
   end
 
   def to_h
@@ -61,7 +65,7 @@ class Event
       "date"            => @date,
       "zip_code"        => @zip_code,
       "duration_sec"    => @duration_sec,
-      "forecasts"       => @forecasts
+      "forecasts"       => populate_forecasts
     }
   end
 
